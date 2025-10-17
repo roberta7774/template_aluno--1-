@@ -63,293 +63,279 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===== CONFIGURAÇÃO DE EVENT LISTENERS =====
 // TODO: Implemente a função para configurar todos os event listeners
 function setupEventListeners() {
-    // TODO: Event listener para adicionar tarefa
+    // Elementos
     const addBtn = document.getElementById('addTaskBtn');
     const taskInput = document.getElementById('taskInput');
-    
-    // addBtn.addEventListener('click', addTask);
-    // taskInput.addEventListener('keypress', function(e) {
-    //     if (e.key === 'Enter') addTask();
-    // });
-    
-    // TODO: Event listener para filtros
     const filterSelect = document.getElementById('filterSelect');
-    // filterSelect.addEventListener('change', function(e) {
-    //     currentFilter = e.target.value;
-    //     renderTasks();
-    // });
-    
-    // TODO: Event listener para busca
     const searchInput = document.getElementById('searchInput');
-    // searchInput.addEventListener('input', function(e) {
-    //     searchTerm = e.target.value.toLowerCase();
-    //     renderTasks();
-    // });
-    
-    // TODO: Event listeners para ações em lote
     const clearCompletedBtn = document.getElementById('clearCompletedBtn');
     const clearAllBtn = document.getElementById('clearAllBtn');
-    
-    // clearCompletedBtn.addEventListener('click', clearCompleted);
-    // clearAllBtn.addEventListener('click', clearAll);
-    
-    // TODO: Event listeners para modal
     const saveEditBtn = document.getElementById('saveEditBtn');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const closeBtn = document.querySelector('.close');
     const modal = document.getElementById('editModal');
-    
-    // saveEditBtn.addEventListener('click', saveEdit);
-    // cancelEditBtn.addEventListener('click', closeModal);
-    // closeBtn.addEventListener('click', closeModal);
-    
-    // TODO: Fechar modal clicando fora
-    // modal.addEventListener('click', function(e) {
-    //     if (e.target === modal) closeModal();
-    // });
-    
-    // TODO: Tecla ESC para fechar modal
-    // document.addEventListener('keydown', function(e) {
-    //     if (e.key === 'Escape') closeModal();
-    // });
+
+    // Adicionar tarefa (botão)
+    addBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        addTask();
+    });
+
+    // Adicionar tarefa com Enter no campo de texto
+    taskInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            addTask();
+        }
+    });
+
+    // Filtros
+    filterSelect.addEventListener('change', function(e) {
+        currentFilter = e.target.value;
+        renderTasks();
+    });
+
+    // Busca (input)
+    searchInput.addEventListener('input', function(e) {
+        searchTerm = e.target.value.trim().toLowerCase();
+        renderTasks();
+    });
+
+    // Ações em lote
+    clearCompletedBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        clearCompleted();
+    });
+
+    clearAllBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        clearAll();
+    });
+
+    // Modal: salvar, cancelar, fechar
+    saveEditBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        saveEdit();
+    });
+
+    cancelEditBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        closeModal();
+    });
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            closeModal();
+        });
+    }
+
+    // Fechar modal clicando fora do conteúdo
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) closeModal();
+        });
+    }
+
+    // Tecla ESC para fechar modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            // se modal aberto, fecha
+            const modalStyle = window.getComputedStyle(modal);
+            if (modal && modalStyle.display !== 'none') closeModal();
+        }
+    });
+
+    // Salvar edição com Enter no campo de edição
+    const editTaskInput = document.getElementById('editTaskInput');
+    if (editTaskInput) {
+        editTaskInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') saveEdit();
+        });
+    }
 }
 
 // ===== FUNÇÕES PRINCIPAIS =====
-
-// TODO: Implemente a função para adicionar uma nova tarefa
 function addTask() {
-    // TODO: Obtenha os valores dos inputs
     const taskInput = document.getElementById('taskInput');
     const prioritySelect = document.getElementById('prioritySelect');
     const text = taskInput.value.trim();
-    
-    // TODO: Valide a entrada
+
+    // Validações
     if (text === '') {
         alert('Por favor, digite uma tarefa!');
         return;
     }
-    
     if (text.length > 100) {
         alert('A tarefa deve ter no máximo 100 caracteres!');
         return;
     }
-    
-    // TODO: Crie o objeto da tarefa
+
     const task = {
-        id: Date.now(), // ID único baseado no timestamp
+        id: Date.now(), // ID único
         text: text,
         completed: false,
-        priority: prioritySelect.value,
+        priority: prioritySelect.value || 'media',
         createdAt: new Date().toISOString(),
         completedAt: null
     };
-    
-    // TODO: Adicione a tarefa ao array
-    tasks.unshift(task); // Adiciona no início do array
-    
-    // TODO: Salve no localStorage
+
+    // Adiciona no início (mais recentes primeiro)
+    tasks.unshift(task);
+
+    // Salva e renderiza
     saveTasks();
-    
-    // TODO: Renderize a lista
     renderTasks();
-    
-    // TODO: Limpe os campos
+
+    // Limpa campos e foca novamente
     taskInput.value = '';
     prioritySelect.value = 'media';
     taskInput.focus();
-    
-    // TODO: Mostre notificação de sucesso
+
     showNotification('Tarefa adicionada com sucesso!', 'success');
 }
 
-// TODO: Implemente a função para alternar o status de uma tarefa
 function toggleTask(id) {
-    // TODO: Encontre a tarefa pelo ID
-    const task = tasks.find(t => t.id === id);
-    
+    // converte id para number caso venha como string
+    const numericId = Number(id);
+    const task = tasks.find(t => t.id === numericId);
+
     if (task) {
-        // TODO: Alterne o status
         task.completed = !task.completed;
         task.completedAt = task.completed ? new Date().toISOString() : null;
-        
-        // TODO: Salve e renderize
+
         saveTasks();
         renderTasks();
-        
-        // TODO: Mostre notificação
+
         const message = task.completed ? 'Tarefa concluída!' : 'Tarefa marcada como pendente!';
         showNotification(message, 'success');
     }
 }
 
-// TODO: Implemente a função para excluir uma tarefa
 function deleteTask(id) {
-    // TODO: Confirme a exclusão
+    const numericId = Number(id);
     if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
-        // TODO: Remova a tarefa do array
-        tasks = tasks.filter(t => t.id !== id);
-        
-        // TODO: Salve e renderize
+        tasks = tasks.filter(t => t.id !== numericId);
         saveTasks();
         renderTasks();
-        
-        // TODO: Mostre notificação
         showNotification('Tarefa excluída!', 'success');
     }
 }
 
-// TODO: Implemente a função para editar uma tarefa
 function editTask(id) {
-    // TODO: Encontre a tarefa
-    const task = tasks.find(t => t.id === id);
-    
+    const numericId = Number(id);
+    const task = tasks.find(t => t.id === numericId);
+
     if (task) {
-        // TODO: Configure o modal de edição
-        editingTaskId = id;
+        editingTaskId = numericId;
         document.getElementById('editTaskInput').value = task.text;
         document.getElementById('editPrioritySelect').value = task.priority;
-        
-        // TODO: Mostre o modal
-        document.getElementById('editModal').style.display = 'block';
+
+        // Mostrar modal
+        const modal = document.getElementById('editModal');
+        modal.style.display = 'block';
         document.getElementById('editTaskInput').focus();
     }
 }
 
-// TODO: Implemente a função para salvar a edição
 function saveEdit() {
-    // TODO: Obtenha os novos valores
     const newText = document.getElementById('editTaskInput').value.trim();
     const newPriority = document.getElementById('editPrioritySelect').value;
-    
-    // TODO: Valide a entrada
+
+    // Validações
     if (newText === '') {
         alert('Por favor, digite um texto para a tarefa!');
         return;
     }
-    
     if (newText.length > 100) {
         alert('A tarefa deve ter no máximo 100 caracteres!');
         return;
     }
-    
-    // TODO: Encontre e atualize a tarefa
+
     const task = tasks.find(t => t.id === editingTaskId);
     if (task) {
         task.text = newText;
         task.priority = newPriority;
-        
-        // TODO: Salve e renderize
+
         saveTasks();
         renderTasks();
-        
-        // TODO: Feche o modal
         closeModal();
-        
-        // TODO: Mostre notificação
         showNotification('Tarefa editada com sucesso!', 'success');
     }
 }
 
-// TODO: Implemente a função para fechar o modal
 function closeModal() {
-    // TODO: Esconda o modal
-    document.getElementById('editModal').style.display = 'none';
+    const modal = document.getElementById('editModal');
+    if (modal) modal.style.display = 'none';
     editingTaskId = null;
 }
 
-// TODO: Implemente a função para limpar tarefas concluídas
 function clearCompleted() {
-    // TODO: Conte as tarefas concluídas
     const completedCount = tasks.filter(t => t.completed).length;
-    
+
     if (completedCount === 0) {
         alert('Não há tarefas concluídas para remover!');
         return;
     }
-    
-    // TODO: Confirme a ação
+
     if (confirm(`Excluir ${completedCount} tarefa(s) concluída(s)?`)) {
-        // TODO: Remova as tarefas concluídas
         tasks = tasks.filter(t => !t.completed);
-        
-        // TODO: Salve e renderize
         saveTasks();
         renderTasks();
-        
-        // TODO: Mostre notificação
         showNotification(`${completedCount} tarefa(s) removida(s)!`, 'success');
     }
 }
 
-// TODO: Implemente a função para limpar todas as tarefas
 function clearAll() {
     if (tasks.length === 0) {
         alert('Não há tarefas para remover!');
         return;
     }
-    
-    // TODO: Confirme a ação
+
     if (confirm(`Excluir todas as ${tasks.length} tarefa(s)?`)) {
-        // TODO: Limpe o array
         tasks = [];
-        
-        // TODO: Salve e renderize
         saveTasks();
         renderTasks();
-        
-        // TODO: Mostre notificação
         showNotification('Todas as tarefas foram removidas!', 'success');
     }
 }
 
 // ===== FUNÇÕES DE RENDERIZAÇÃO =====
-
-// TODO: Implemente a função principal de renderização
 function renderTasks() {
-    // TODO: Obtenha as tarefas filtradas
     const filteredTasks = getFilteredTasks();
-    
-    // TODO: Obtenha os elementos do DOM
+
     const taskList = document.getElementById('taskList');
     const emptyState = document.getElementById('emptyState');
-    
-    // TODO: Limpe a lista
+
+    // Limpa
     taskList.innerHTML = '';
-    
-    // TODO: Verifique se há tarefas para mostrar
+
     if (filteredTasks.length === 0) {
         emptyState.style.display = 'block';
         taskList.style.display = 'none';
     } else {
         emptyState.style.display = 'none';
         taskList.style.display = 'block';
-        
-        // TODO: Renderize cada tarefa
+
         filteredTasks.forEach(task => {
             const taskElement = createTaskElement(task);
             taskList.appendChild(taskElement);
         });
     }
-    
-    // TODO: Atualize as estatísticas
+
     updateStats();
 }
 
-// TODO: Implemente a função para criar o elemento HTML de uma tarefa
 function createTaskElement(task) {
-    // TODO: Crie o elemento li
     const li = document.createElement('li');
     li.className = `task-item ${task.completed ? 'completed' : ''}`;
     li.setAttribute('data-task-id', task.id);
-    
-    // TODO: Formate as datas
+
     const createdDate = new Date(task.createdAt).toLocaleDateString('pt-BR');
     const completedDate = task.completedAt ? new Date(task.completedAt).toLocaleDateString('pt-BR') : '';
-    
-    // TODO: Crie o HTML interno
+
+    // Construindo o conteúdo com escapeHtml para segurança
     li.innerHTML = `
         <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} 
-               onchange="toggleTask(${task.id})">
+        onchange="toggleTask(${task.id})">
         <span class="task-text">${escapeHtml(task.text)}</span>
         <span class="task-priority priority-${task.priority}">${task.priority}</span>
         <span class="task-date">
@@ -357,8 +343,7 @@ function createTaskElement(task) {
             ${task.completed ? `<br>Concluída: ${completedDate}` : ''}
         </span>
         <div class="task-actions">
-            <button class="edit-btn" onclick="editTask(${task.id})" 
-                    ${task.completed ? 'disabled' : ''}>
+            <button class="edit-btn" onclick="editTask(${task.id})" ${task.completed ? 'disabled' : ''}>
                 <i class="fas fa-edit"></i> Editar
             </button>
             <button class="delete-btn" onclick="deleteTask(${task.id})">
@@ -366,15 +351,14 @@ function createTaskElement(task) {
             </button>
         </div>
     `;
-    
+
     return li;
 }
 
-// TODO: Implemente a função para filtrar tarefas
+// ===== FILTROS E BUSCA =====
 function getFilteredTasks() {
     let filtered = [...tasks];
-    
-    // TODO: Aplique o filtro selecionado
+
     switch (currentFilter) {
         case 'pendentes':
             filtered = filtered.filter(t => !t.completed);
@@ -387,38 +371,31 @@ function getFilteredTasks() {
         case 'baixa':
             filtered = filtered.filter(t => t.priority === currentFilter);
             break;
-        // 'todas' não precisa de filtro
+        // 'todas' => sem filtro adicional
     }
-    
-    // TODO: Aplique a busca por texto
+
     if (searchTerm) {
-        filtered = filtered.filter(t => 
+        filtered = filtered.filter(t =>
             t.text.toLowerCase().includes(searchTerm)
         );
     }
-    
+
     return filtered;
 }
 
-// TODO: Implemente a função para atualizar estatísticas
 function updateStats() {
-    // TODO: Calcule as estatísticas
     const total = tasks.length;
     const completed = tasks.filter(t => t.completed).length;
     const pending = total - completed;
-    
-    // TODO: Atualize os elementos do DOM
+
     document.getElementById('totalTasks').textContent = `Total: ${total}`;
     document.getElementById('completedTasks').textContent = `Concluídas: ${completed}`;
     document.getElementById('pendingTasks').textContent = `Pendentes: ${pending}`;
 }
 
-// ===== FUNÇÕES DE PERSISTÊNCIA =====
-
-// TODO: Implemente a função para salvar no localStorage
+// ===== PERSISTÊNCIA =====
 function saveTasks() {
     try {
-        // TODO: Salve o array de tarefas como JSON
         localStorage.setItem('tasks', JSON.stringify(tasks));
     } catch (error) {
         console.error('Erro ao salvar tarefas:', error);
@@ -426,10 +403,8 @@ function saveTasks() {
     }
 }
 
-// TODO: Implemente a função para carregar do localStorage
 function loadTasks() {
     try {
-        // TODO: Carregue e parse o JSON
         const saved = localStorage.getItem('tasks');
         tasks = saved ? JSON.parse(saved) : [];
     } catch (error) {
@@ -438,36 +413,31 @@ function loadTasks() {
     }
 }
 
-// ===== FUNÇÕES AUXILIARES =====
-
-// TODO: Implemente a função para escapar HTML (segurança)
+// ===== UTILITÁRIOS =====
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
 
-// TODO: Implemente a função para mostrar notificações
 function showNotification(message, type = 'info') {
-    // TODO: Crie o elemento de notificação
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
-    
-    // TODO: Adicione estilos
+
     notification.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
-        padding: 15px 20px;
+        padding: 12px 16px;
         border-radius: 8px;
         color: white;
         font-weight: 600;
         z-index: 1001;
-        max-width: 300px;
+        max-width: 320px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
     `;
-    
-    // TODO: Defina a cor baseada no tipo
+
     const colors = {
         success: '#28a745',
         error: '#dc3545',
@@ -475,23 +445,18 @@ function showNotification(message, type = 'info') {
         warning: '#ffc107'
     };
     notification.style.backgroundColor = colors[type] || colors.info;
-    
-    // TODO: Adicione ao DOM
+
     document.body.appendChild(notification);
-    
-    // TODO: Remova após 3 segundos
+
     setTimeout(() => {
-        if (notification.parentNode) {
-            notification.remove();
-        }
+        if (notification.parentNode) notification.remove();
     }, 3000);
 }
 
-// TODO: Implemente a função para adicionar tarefas de exemplo
 function addExampleTasks() {
     const exampleTasks = [
         {
-            id: Date.now() - 3,
+            id: Date.now() - 3000,
             text: 'Estudar JavaScript avançado',
             completed: false,
             priority: 'alta',
@@ -499,7 +464,7 @@ function addExampleTasks() {
             completedAt: null
         },
         {
-            id: Date.now() - 2,
+            id: Date.now() - 2000,
             text: 'Fazer exercícios de CSS',
             completed: true,
             priority: 'media',
@@ -507,7 +472,7 @@ function addExampleTasks() {
             completedAt: new Date().toISOString()
         },
         {
-            id: Date.now() - 1,
+            id: Date.now() - 1000,
             text: 'Revisar conceitos de HTML',
             completed: false,
             priority: 'baixa',
@@ -515,7 +480,7 @@ function addExampleTasks() {
             completedAt: null
         }
     ];
-    
+
     tasks = exampleTasks;
     saveTasks();
     renderTasks();

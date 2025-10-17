@@ -19,9 +19,9 @@ PONTUAÇÃO CSS (20 pontos):
 :root {
     --primary-color: #4facfe;
     --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    --secondary-color: #6c757d;
-    --success-color: #28a745;
-    --danger-color: #dc3545;
+    --secondary-color: #001120;
+    --success-color: #15a136;
+    --danger-color: #7c6264;
     --warning-color: #ffc107;
     --info-color: #17a2b8;
     
@@ -29,7 +29,7 @@ PONTUAÇÃO CSS (20 pontos):
     --card-bg: #ffffff;
     --text-primary: #333333;
     --text-secondary: #6c757d;
-    --border-color: #e9ecef;
+    --border-color: #2282e2;
     
     --border-radius: 8px;
     --border-radius-lg: 15px;
