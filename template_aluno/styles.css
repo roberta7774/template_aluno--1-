@@ -59,7 +59,7 @@ body {
 .container {
     max-width: 800px;
     margin: 0 auto;
-    background: #7c69a8;
+    background: #f8f5ff;
     border-radius: 15px;
     box-shadow:  0 20px 40px rgba(0, 0, 0, 0.1);
     overflow: hidden; 
@@ -115,8 +115,10 @@ body {
 #taskInput:focus {
     /* TODO: Implemente estilos de foco */
     outline: none;
-    border-color: #4facfe;
+    border-color: #4ffe75;
     box-shadow: 0 0 5px #e9ecef;
+    border-color: #007bff;
+    box-shadow: #007bff;
     /* Adicione border-color e box-shadow */
 }
 
@@ -323,7 +325,7 @@ body {
 
 .delete-btn {
     background: #ffebee;
-    color: #d32f2f;
+    color: #c70707;
 }
 
 .delete-btn:hover {
@@ -378,8 +380,8 @@ body {
 }
 
 .btn-danger {
-    background: #dc3545;
-    color: white;
+    background: #321d8d;
+    color: rgb(240, 230, 230);
 }
 
 .btn-danger:hover {
