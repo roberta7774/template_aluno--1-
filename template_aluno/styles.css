@@ -173,14 +173,14 @@ body {
 
 .filter-section label {
     font-weight: 600;
-    color: #010911;
+    color: #031425;
 }
 
 #filterSelect, #searchInput {
     /* TODO: Complete os estilos */
     padding: 10px;
-    border-color: #6e127e;
-    border: 1px solid ;
+    border-color: #cf0ef1;
+    border: 2px solid ;
     border-radius: 6px;
     font-size: 0.9rem;
 }
@@ -192,21 +192,22 @@ body {
 .search-icon {
     position: absolute;
     right: 10px;
-    color: #1373c7;
+    color: #520651;
 }
 
 .stats {
     display: flex;
-    gap: 15px;
+    gap: 40px;
     font-size: 0.9rem;
-    color:#01060a;
+    color:#06010a;
+
 }
 
 .stats span {
-    background: white;
-    padding: 5px px;
+    background: #f3ecf6;
+    padding: 10px;
     border-radius: 15px;
-    border: 1px solid #e9ecef;
+    border: 2px solid  #e2c7ee;
     font-weight: 600;
 }
 
@@ -238,19 +239,21 @@ body {
 .task-item:hover {
     /* TODO: Adicione efeito hover */
     transform: translateY(-2px);
+    color: #520651;
+    box-shadow: #bd22d8;
     /* Adicione box-shadow */
 }
 
 .task-item.completed {
     /* TODO: Estilos para tarefas concluídas */
     opacity: 0.7;
-    background: #f8f9fa;
+    background: #4d0465;
 }
 
 .task-item.completed .task-text {
     /* TODO: Adicione text-decoration e color */
     text-decoration: line-through;
-    color: #6c757d;
+    color: #ffffff;
 }
 
 .task-checkbox {
@@ -285,27 +288,27 @@ body {
 
 .priority-media {
     /* TODO: Cores para prioridade média (laranja) */
-    background: #fff3e0;
-    color: #ef6c00;
-    border: 1px solid #ffcc02;
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #1c1700;
 }
 
 .priority-baixa {
     /* TODO: Cores para prioridade baixa (verde) */
-    background: #e8f5e8;
-    color: #2e7d32;
-    border: 1px solid #c8e6c9;
+    background: #f5ebf9;
+    color: #000000;
+    border: 1px solid #25023034;
 }
 
 .task-date {
     font-size: 0.8rem;
-    color: #6c757d;
+    color: #ffffff;
     margin-left: 10px;
 }
 
 .task-actions {
     display: flex;
-    gap: 10px;
+    gap: 30px;
 }
 
 .task-actions button {
@@ -339,7 +342,7 @@ body {
 .empty-state {
     text-align: center;
     padding: 60px 20px;
-    color: #6c757d;
+    color: #7d706c;
 }
 
 .empty-state i {
@@ -374,21 +377,23 @@ body {
 }
 
 .btn-secondary {
-    background: #6c757d;
+    background: #716e6e;
     color: white;
 }
 
 .btn-secondary:hover {
     /* TODO: Adicione efeito hover */
+    color:#79b0cb
 }
 
 .btn-danger {
-    background: #321d8d;
-    color: rgb(240, 230, 230);
+    background: #eccfd2;
+    color: rgb(181, 0, 0);
 }
 
 .btn-danger:hover {
     /* TODO: Adicione efeito hover */
+    color:#5f2f23
 }
 
 .btn-primary {
@@ -398,6 +403,7 @@ body {
 
 .btn-primary:hover {
     /* TODO: Adicione efeito hover */
+    color:#15a136
 }
 
 /* ===== MODAL ===== */
@@ -557,17 +563,17 @@ body {
 @media (max-width: 480px) {
     body {
         /* TODO: Ajustes para mobile pequeno */
-        padding: 10px;
+        padding: 0px;
     }
     
     .task-input-section, .task-list-container {
         /* TODO: Reduzir padding */
-        padding: 20px;
+        padding: 15px;
     }
     
     .controls {
         /* TODO: Reduzir padding */
-        padding: 15px 20px;
+        padding: 10px 15px;
     }
 }
 
