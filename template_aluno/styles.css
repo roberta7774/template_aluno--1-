@@ -49,7 +49,7 @@ PONTUAÇÃO CSS (20 pontos):
 
 body {
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #0d2281 0%, #3734d4 100%);
+    background: linear-gradient(135deg, #e8a6ec 0%, #b74be1 100%);
     min-height: 100vh;
     padding: 20px;
     color:  #000000;
@@ -59,7 +59,7 @@ body {
 .container {
     max-width: 800px;
     margin: 0 auto;
-    background: #f8f5ff;
+    background: #f3ecf6;
     border-radius: 15px;
     box-shadow:  0 20px 40px rgba(0, 0, 0, 0.1);
     overflow: hidden; 
@@ -67,7 +67,7 @@ body {
 
 /* ===== HEADER ===== */
 .header {
-    background:  linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    background:  linear-gradient(135deg, #9c5cbc 0%, #56246c 100%);
     color: white;
     padding: 30px;
     text-align: center;
@@ -90,14 +90,14 @@ body {
 
 /* ===== SEÇÃO DE ENTRADA DE TAREFAS ===== */
 .task-input-section {
-    padding: 30px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
+    padding: 25px;
+    background: #ffffff;
+    border-bottom: 1px solid #ffffff;
 }
 
 .input-group {
     display: flex;
-    gap: 10px;
+    gap: 20px;
     align-items: center;
 }
 
@@ -105,7 +105,7 @@ body {
 #taskInput {
     flex: 1;
     padding: 15px;
-    border: 2px solid  #e9ecef;
+    border: 2px solid  #a352c5;
     border-radius: 8px;
     font-size: 1rem;
     transition:  all 0.3s ease;
@@ -115,18 +115,18 @@ body {
 #taskInput:focus {
     /* TODO: Implemente estilos de foco */
     outline: none;
-    border-color: #4ffe75;
-    box-shadow: 0 0 5px #e9ecef;
-    border-color: #007bff;
-    box-shadow: #007bff;
+    border-color: #ffffff;
+    box-shadow: 0 0 5px #0c4176;
+    border-color: #44035c;
+    box-shadow: 0 0 8px rgba(74, 4, 77, 0.5);
     /* Adicione border-color e box-shadow */
 }
 
 #prioritySelect {
     /* TODO: Complete os estilos do select */
     padding: 15px;
-    border: 2px solid #e9ecef;
-    border-radius: 15px;
+    border: 2px solid #a352c5;
+    border-radius: 8px;
     font-size: 1rem;
     background: white;
     cursor: pointer;
@@ -135,7 +135,7 @@ body {
 #addTaskBtn {
     /* TODO: Complete os estilos do botão */
     padding: 15px 25px;
-    background:  linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    background:  linear-gradient(135deg, #9c5cbc 0%, #3a105f 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -148,14 +148,16 @@ body {
 #addTaskBtn:hover {
     /* TODO: Adicione efeito hover */
     transform: translateY(-2px);
+    border-color: #44035c;
+    box-shadow: 0 0 8px rgba(204, 0, 211, 0.5);;
     /* Adicione box-shadow */
 }
 
 /* ===== CONTROLES ===== */
 .controls {
     padding: 20px 30px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #f8f9fa;
+    background: #ffffff;
+    border-bottom: 1px solid #f3ecf6;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
@@ -171,13 +173,14 @@ body {
 
 .filter-section label {
     font-weight: 600;
-    color: #6c757d;
+    color: #010911;
 }
 
 #filterSelect, #searchInput {
     /* TODO: Complete os estilos */
     padding: 10px;
-    border: 1px solid #e9ecef;
+    border-color: #6e127e;
+    border: 1px solid ;
     border-radius: 6px;
     font-size: 0.9rem;
 }
@@ -189,19 +192,19 @@ body {
 .search-icon {
     position: absolute;
     right: 10px;
-    color: #6c757d;
+    color: #1373c7;
 }
 
 .stats {
     display: flex;
     gap: 15px;
     font-size: 0.9rem;
-    color:#6c757d;
+    color:#01060a;
 }
 
 .stats span {
     background: white;
-    padding: 5px 10px;
+    padding: 5px px;
     border-radius: 15px;
     border: 1px solid #e9ecef;
     font-weight: 600;
