@@ -489,7 +489,7 @@ body {
 @keyframes slideIn {
     /* TODO: Animação de slide in */
     from { 
-        transform: translateY(-50px); 
+        transform: translateY(-20px); 
         opacity: 0; 
     }
     to { 
@@ -563,7 +563,7 @@ body {
 @media (max-width: 480px) {
     body {
         /* TODO: Ajustes para mobile pequeno */
-        padding: 0px;
+        padding: 10px;
     }
     
     .task-input-section, .task-list-container {
