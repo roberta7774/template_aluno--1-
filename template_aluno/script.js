@@ -1,9 +1,9 @@
 /*
 ATIVIDADE: LISTA DE TAREFAS INTERATIVA - JAVASCRIPT
 
-NOME DO ALUNO: ________________________________
-TURMA: ________________________________________
-DATA: _________________________________________
+NOME DO ALUNO: Mariah Vitória e Roberta Castellan
+TURMA: 3º B
+DATA: 18/10/2025
 
 INSTRUÇÕES GERAIS:
 - Implemente todas as funcionalidades marcadas com TODO
@@ -63,7 +63,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===== CONFIGURAÇÃO DE EVENT LISTENERS =====
 // TODO: Implemente a função para configurar todos os event listeners
 function setupEventListeners() {
-    // Elementos
     const addBtn = document.getElementById('addTaskBtn');
     const taskInput = document.getElementById('taskInput');
     const filterSelect = document.getElementById('filterSelect');
@@ -74,6 +73,7 @@ function setupEventListeners() {
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const closeBtn = document.querySelector('.close');
     const modal = document.getElementById('editModal');
+    const editTaskInput = document.getElementById('editTaskInput');
 
     // Adicionar tarefa (botão)
     addBtn.addEventListener('click', function(e) {
@@ -83,35 +83,34 @@ function setupEventListeners() {
 
     // Adicionar tarefa com Enter no campo de texto
     taskInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            addTask();
-        }
+        if (e.key === 'Enter') addTask();
     });
 
-    // Filtros
+    // Filtro de exibição
     filterSelect.addEventListener('change', function(e) {
         currentFilter = e.target.value;
         renderTasks();
     });
 
-    // Busca (input)
+    // Busca por texto
     searchInput.addEventListener('input', function(e) {
         searchTerm = e.target.value.trim().toLowerCase();
         renderTasks();
     });
 
-    // Ações em lote
+    // Limpar concluídas
     clearCompletedBtn.addEventListener('click', function(e) {
         e.preventDefault();
         clearCompleted();
     });
 
+    // Limpar todas
     clearAllBtn.addEventListener('click', function(e) {
         e.preventDefault();
         clearAll();
     });
 
-    // Modal: salvar, cancelar, fechar
+    // Modal de edição
     saveEditBtn.addEventListener('click', function(e) {
         e.preventDefault();
         saveEdit();
@@ -122,30 +121,20 @@ function setupEventListeners() {
         closeModal();
     });
 
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function() {
-            closeModal();
-        });
-    }
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
 
-    // Fechar modal clicando fora do conteúdo
     if (modal) {
         modal.addEventListener('click', function(e) {
             if (e.target === modal) closeModal();
         });
     }
 
-    // Tecla ESC para fechar modal
+    // Tecla ESC fecha modal
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            // se modal aberto, fecha
-            const modalStyle = window.getComputedStyle(modal);
-            if (modal && modalStyle.display !== 'none') closeModal();
-        }
+        if (e.key === 'Escape') closeModal();
     });
 
-    // Salvar edição com Enter no campo de edição
-    const editTaskInput = document.getElementById('editTaskInput');
+    // Enter no campo de edição
     if (editTaskInput) {
         editTaskInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') saveEdit();
@@ -170,7 +159,7 @@ function addTask() {
     }
 
     const task = {
-        id: Date.now(), // ID único
+        id: Date.now(),
         text: text,
         completed: false,
         priority: prioritySelect.value || 'media',
@@ -178,14 +167,10 @@ function addTask() {
         completedAt: null
     };
 
-    // Adiciona no início (mais recentes primeiro)
-    tasks.unshift(task);
-
-    // Salva e renderiza
+    tasks.unshift(task); // adiciona no início
     saveTasks();
     renderTasks();
 
-    // Limpa campos e foca novamente
     taskInput.value = '';
     prioritySelect.value = 'media';
     taskInput.focus();
@@ -194,26 +179,19 @@ function addTask() {
 }
 
 function toggleTask(id) {
-    // converte id para number caso venha como string
-    const numericId = Number(id);
-    const task = tasks.find(t => t.id === numericId);
-
+    const task = tasks.find(t => t.id === id);
     if (task) {
         task.completed = !task.completed;
         task.completedAt = task.completed ? new Date().toISOString() : null;
-
         saveTasks();
         renderTasks();
-
-        const message = task.completed ? 'Tarefa concluída!' : 'Tarefa marcada como pendente!';
-        showNotification(message, 'success');
+        showNotification(task.completed ? 'Tarefa concluída!' : 'Tarefa marcada como pendente!', 'info');
     }
 }
 
 function deleteTask(id) {
-    const numericId = Number(id);
     if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
-        tasks = tasks.filter(t => t.id !== numericId);
+        tasks = tasks.filter(t => t.id !== id);
         saveTasks();
         renderTasks();
         showNotification('Tarefa excluída!', 'success');
@@ -221,18 +199,12 @@ function deleteTask(id) {
 }
 
 function editTask(id) {
-    const numericId = Number(id);
-    const task = tasks.find(t => t.id === numericId);
-
+    const task = tasks.find(t => t.id === id);
     if (task) {
-        editingTaskId = numericId;
+        editingTaskId = id;
         document.getElementById('editTaskInput').value = task.text;
         document.getElementById('editPrioritySelect').value = task.priority;
-
-        // Mostrar modal
-        const modal = document.getElementById('editModal');
-        modal.style.display = 'block';
-        document.getElementById('editTaskInput').focus();
+        document.getElementById('editModal').style.display = 'block';
     }
 }
 
@@ -240,13 +212,8 @@ function saveEdit() {
     const newText = document.getElementById('editTaskInput').value.trim();
     const newPriority = document.getElementById('editPrioritySelect').value;
 
-    // Validações
     if (newText === '') {
-        alert('Por favor, digite um texto para a tarefa!');
-        return;
-    }
-    if (newText.length > 100) {
-        alert('A tarefa deve ter no máximo 100 caracteres!');
+        alert('Digite um texto válido!');
         return;
     }
 
@@ -254,33 +221,29 @@ function saveEdit() {
     if (task) {
         task.text = newText;
         task.priority = newPriority;
-
         saveTasks();
         renderTasks();
         closeModal();
-        showNotification('Tarefa editada com sucesso!', 'success');
+        showNotification('Tarefa atualizada com sucesso!', 'success');
     }
 }
 
 function closeModal() {
-    const modal = document.getElementById('editModal');
-    if (modal) modal.style.display = 'none';
+    document.getElementById('editModal').style.display = 'none';
     editingTaskId = null;
 }
 
 function clearCompleted() {
     const completedCount = tasks.filter(t => t.completed).length;
-
     if (completedCount === 0) {
         alert('Não há tarefas concluídas para remover!');
         return;
     }
-
-    if (confirm(`Excluir ${completedCount} tarefa(s) concluída(s)?`)) {
+    if (confirm(`Deseja excluir ${completedCount} tarefa(s) concluída(s)?`)) {
         tasks = tasks.filter(t => !t.completed);
         saveTasks();
         renderTasks();
-        showNotification(`${completedCount} tarefa(s) removida(s)!`, 'success');
+        showNotification('Tarefas concluídas removidas!', 'success');
     }
 }
 
@@ -289,8 +252,7 @@ function clearAll() {
         alert('Não há tarefas para remover!');
         return;
     }
-
-    if (confirm(`Excluir todas as ${tasks.length} tarefa(s)?`)) {
+    if (confirm(`Excluir todas as ${tasks.length} tarefas?`)) {
         tasks = [];
         saveTasks();
         renderTasks();
@@ -298,14 +260,12 @@ function clearAll() {
     }
 }
 
-// ===== FUNÇÕES DE RENDERIZAÇÃO =====
+// ===== RENDERIZAÇÃO =====
 function renderTasks() {
-    const filteredTasks = getFilteredTasks();
-
     const taskList = document.getElementById('taskList');
     const emptyState = document.getElementById('emptyState');
+    const filteredTasks = getFilteredTasks();
 
-    // Limpa
     taskList.innerHTML = '';
 
     if (filteredTasks.length === 0) {
@@ -314,11 +274,7 @@ function renderTasks() {
     } else {
         emptyState.style.display = 'none';
         taskList.style.display = 'block';
-
-        filteredTasks.forEach(task => {
-            const taskElement = createTaskElement(task);
-            taskList.appendChild(taskElement);
-        });
+        filteredTasks.forEach(task => taskList.appendChild(createTaskElement(task)));
     }
 
     updateStats();
@@ -327,59 +283,34 @@ function renderTasks() {
 function createTaskElement(task) {
     const li = document.createElement('li');
     li.className = `task-item ${task.completed ? 'completed' : ''}`;
-    li.setAttribute('data-task-id', task.id);
 
     const createdDate = new Date(task.createdAt).toLocaleDateString('pt-BR');
     const completedDate = task.completedAt ? new Date(task.completedAt).toLocaleDateString('pt-BR') : '';
 
-    // Construindo o conteúdo com escapeHtml para segurança
     li.innerHTML = `
-        <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} 
-        onchange="toggleTask(${task.id})">
+        <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})">
         <span class="task-text">${escapeHtml(task.text)}</span>
         <span class="task-priority priority-${task.priority}">${task.priority}</span>
-        <span class="task-date">
-            Criada: ${createdDate}
-            ${task.completed ? `<br>Concluída: ${completedDate}` : ''}
-        </span>
+        <span class="task-date">Criada: ${createdDate}${task.completed ? `<br>Concluída: ${completedDate}` : ''}</span>
         <div class="task-actions">
-            <button class="edit-btn" onclick="editTask(${task.id})" ${task.completed ? 'disabled' : ''}>
-                <i class="fas fa-edit"></i> Editar
-            </button>
-            <button class="delete-btn" onclick="deleteTask(${task.id})">
-                <i class="fas fa-trash"></i> Excluir
-            </button>
+            <button onclick="editTask(${task.id})" ${task.completed ? 'disabled' : ''}><i class="fas fa-edit"></i></button>
+            <button onclick="deleteTask(${task.id})"><i class="fas fa-trash"></i></button>
         </div>
     `;
-
     return li;
 }
 
 // ===== FILTROS E BUSCA =====
 function getFilteredTasks() {
     let filtered = [...tasks];
-
     switch (currentFilter) {
-        case 'pendentes':
-            filtered = filtered.filter(t => !t.completed);
-            break;
-        case 'concluidas':
-            filtered = filtered.filter(t => t.completed);
-            break;
+        case 'pendentes': filtered = filtered.filter(t => !t.completed); break;
+        case 'concluidas': filtered = filtered.filter(t => t.completed); break;
         case 'alta':
         case 'media':
-        case 'baixa':
-            filtered = filtered.filter(t => t.priority === currentFilter);
-            break;
-        // 'todas' => sem filtro adicional
+        case 'baixa': filtered = filtered.filter(t => t.priority === currentFilter); break;
     }
-
-    if (searchTerm) {
-        filtered = filtered.filter(t =>
-            t.text.toLowerCase().includes(searchTerm)
-        );
-    }
-
+    if (searchTerm) filtered = filtered.filter(t => t.text.toLowerCase().includes(searchTerm));
     return filtered;
 }
 
@@ -387,30 +318,19 @@ function updateStats() {
     const total = tasks.length;
     const completed = tasks.filter(t => t.completed).length;
     const pending = total - completed;
-
     document.getElementById('totalTasks').textContent = `Total: ${total}`;
     document.getElementById('completedTasks').textContent = `Concluídas: ${completed}`;
     document.getElementById('pendingTasks').textContent = `Pendentes: ${pending}`;
 }
 
-// ===== PERSISTÊNCIA =====
+// ===== LOCAL STORAGE =====
 function saveTasks() {
-    try {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    } catch (error) {
-        console.error('Erro ao salvar tarefas:', error);
-        alert('Erro ao salvar tarefas!');
-    }
+    localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
 function loadTasks() {
-    try {
-        const saved = localStorage.getItem('tasks');
-        tasks = saved ? JSON.parse(saved) : [];
-    } catch (error) {
-        console.error('Erro ao carregar tarefas:', error);
-        tasks = [];
-    }
+    const saved = localStorage.getItem('tasks');
+    tasks = saved ? JSON.parse(saved) : [];
 }
 
 // ===== UTILITÁRIOS =====
@@ -421,90 +341,24 @@ function escapeHtml(text) {
 }
 
 function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 12px 16px;
-        border-radius: 8px;
-        color: white;
-        font-weight: 600;
-        z-index: 1001;
-        max-width: 320px;
-        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    const n = document.createElement('div');
+    n.className = `notification ${type}`;
+    n.textContent = message;
+    n.style.cssText = `
+        position: fixed; top: 20px; right: 20px; background: #333; color: white;
+        padding: 12px 16px; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        z-index: 1000; font-weight: 600;
     `;
-
-    const colors = {
-        success: '#28a745',
-        error: '#dc3545',
-        info: '#17a2b8',
-        warning: '#ffc107'
-    };
-    notification.style.backgroundColor = colors[type] || colors.info;
-
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-        if (notification.parentNode) notification.remove();
-    }, 3000);
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 3000);
 }
 
 function addExampleTasks() {
-    const exampleTasks = [
-        {
-            id: Date.now() - 3000,
-            text: 'Estudar JavaScript avançado',
-            completed: false,
-            priority: 'alta',
-            createdAt: new Date().toISOString(),
-            completedAt: null
-        },
-        {
-            id: Date.now() - 2000,
-            text: 'Fazer exercícios de CSS',
-            completed: true,
-            priority: 'media',
-            createdAt: new Date(Date.now() - 86400000).toISOString(),
-            completedAt: new Date().toISOString()
-        },
-        {
-            id: Date.now() - 1000,
-            text: 'Revisar conceitos de HTML',
-            completed: false,
-            priority: 'baixa',
-            createdAt: new Date(Date.now() - 172800000).toISOString(),
-            completedAt: null
-        }
+    tasks = [
+        { id: Date.now() - 1, text: 'Estudar JavaScript avançado', completed: false, priority: 'alta', createdAt: new Date().toISOString(), completedAt: null },
+        { id: Date.now() - 2, text: 'Fazer exercícios de CSS', completed: true, priority: 'media', createdAt: new Date().toISOString(), completedAt: new Date().toISOString() },
+        { id: Date.now() - 3, text: 'Revisar conceitos de HTML', completed: false, priority: 'baixa', createdAt: new Date().toISOString(), completedAt: null }
     ];
-
-    tasks = exampleTasks;
     saveTasks();
     renderTasks();
 }
-
-// ===== FUNCIONALIDADES EXTRAS (OPCIONAL) =====
-
-// TODO: Implemente funcionalidades extras para pontos adicionais:
-// - Drag and drop para reordenar tarefas
-// - Categorias/tags para tarefas
-// - Data de vencimento
-// - Exportar/importar tarefas
-// - Modo escuro
-// - Atalhos de teclado
-
-/*
-CHECKLIST DE ENTREGA:
-□ Todas as funcionalidades obrigatórias implementadas
-□ Código comentado e organizado
-□ Validações de entrada funcionando
-□ Persistência no localStorage funcionando
-□ Interface responsiva
-□ Testado em diferentes navegadores
-□ Sem erros no console do navegador
-□ Arquivo ZIP com todos os arquivos
-*/
-
